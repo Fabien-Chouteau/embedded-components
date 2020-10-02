@@ -14,6 +14,8 @@ Library](https://github.com/AdaCore/Ada_Drivers_Library/) repo.
 name = "embedded_components"
 version = "0.1.0"
 licenses = ["BSD 3-Clauses"]
+authors=["AdaCore"]
+website="https://github.com/AdaCore/Ada_Drivers_Library/"
 maintainers = ["chouteau@adacore.com"]
 maintainers-logins = ["Fabien-Chouteau"]
 project-files = ["embedded_components.gpr"]
@@ -21,3 +23,4 @@ tags = ["embedded", "nostd"]
 
 [[depends-on]]
 hal = "^0.1.0"
+adl_middleware = "^0.1.0"
