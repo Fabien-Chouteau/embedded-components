@@ -23,4 +23,4 @@ tags = ["embedded", "nostd"]
 
 [[depends-on]]
 hal = "^0.1.0"
-adl_middleware = "^0.1.0"
+adl_middleware = "^0.1.1"
