@@ -16,7 +16,7 @@ project Embedded_Components is
    for Library_Kind use Library_Type;
 
    type Enabled_Kind is ("enabled", "disabled");
-   Compile_Checks : Enabled_Kind := External ("EMBEDDED_COMPONENTS_COMPILE_CHECKS", "enabled");
+   Compile_Checks : Enabled_Kind := External ("EMBEDDED_COMPONENTS_COMPILE_CHECKS", "disabled");
    Runtime_Checks : Enabled_Kind := External ("EMBEDDED_COMPONENTS_RUNTIME_CHECKS", "disabled");
    Style_Checks : Enabled_Kind := External ("EMBEDDED_COMPONENTS_STYLE_CHECKS", "disabled");
    Contracts_Checks : Enabled_Kind := External ("EMBEDDED_COMPONENTS_CONTRACTS", "disabled");
