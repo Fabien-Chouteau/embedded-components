@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                     Copyright (C) 2015-2023, AdaCore                     --
+--                       Copyright (C) 2023, AdaCore                        --
 --                                                                          --
 --  Redistribution and use in source and binary forms, with or without      --
 --  modification, are permitted provided that the following conditions are  --
@@ -29,15 +29,64 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Root package for the ILI9341 - 320x240 RGB TFT LCD driver.
+--  Winbond W25Q16 is 2M-byte flash memory organized into 8,192 programmable
+--  pages of 256 bytes each. Up to 256 bytes can be programmed at a time.
+--  Pages can be erased in groups of 16 (4KB), groups of 128 (32KB), groups
+--  of 256 (64KB) or the entire chip (chip erase).
 
-package ILI9341 is
-   pragma Pure;
+with HAL.Flash;
+with HAL.GPIO;
+with HAL.SPI;
 
-   type Interface_Kind is
-     (Parallel,
-      Serial,
-      RGB);
-   --  Defines how the chip is connected to the MCU.
+package W25Q16 is
 
-end ILI9341;
+   type Flash_Memory
+     (SPI : not null HAL.SPI.Any_SPI_Port;
+      CS  : not null HAL.GPIO.Any_GPIO_Point) is
+       limited new HAL.Flash.Flash_Memory with private;
+
+   Chip_Size : constant := 2 ** 21;  --  2 MB
+
+   overriding function Size (This : Flash_Memory) return Natural
+     is (Chip_Size);
+
+   overriding function Is_Busy (This : Flash_Memory) return Boolean;
+
+   overriding function Erasable_Region
+     (This   : in out Flash_Memory;
+      Region : HAL.Flash.Memory_Region)
+       return HAL.Flash.Memory_Region;
+
+   overriding procedure Erase
+     (This    : in out Flash_Memory;
+      Region  : HAL.Flash.Memory_Region;
+      Success : out Boolean);
+
+   procedure Check_JEDEC_ID
+     (This : in out Flash_Memory;
+      Ok   : out Boolean);
+
+   overriding procedure Read
+     (This    : in out Flash_Memory;
+      Offset  : Natural;
+      Data    : out HAL.UInt8_Array;
+      Success : out Boolean);
+
+   overriding procedure Write
+     (This    : in out Flash_Memory;
+      Offset  : Natural;
+      Data    : HAL.UInt8_Array;
+      Success : out Boolean);
+   --  The chip is able to write up to 256 bytes in one go if they are fitted
+   --  in aligned 256 bytes blocks. Otherwise, Write is split in several
+   --  commands and execution is blocked until all except the last one is
+   --  finished.
+
+private
+
+   type Flash_Memory
+     (SPI : not null HAL.SPI.Any_SPI_Port;
+      CS  : not null HAL.GPIO.Any_GPIO_Point)
+   is limited new HAL.Flash.Flash_Memory with null record;
+
+end W25Q16;

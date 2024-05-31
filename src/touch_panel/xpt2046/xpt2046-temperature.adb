@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                     Copyright (C) 2015-2023, AdaCore                     --
+--                       Copyright (C) 2023, AdaCore                        --
 --                                                                          --
 --  Redistribution and use in source and binary forms, with or without      --
 --  modification, are permitted provided that the following conditions are  --
@@ -29,15 +29,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Root package for the ILI9341 - 320x240 RGB TFT LCD driver.
+--  XPT2046 has an internal temperature sensor.
+--  This function reads the temperature from it, if you provide a reference
+--  voltage (in milivolts).
 
-package ILI9341 is
-   pragma Pure;
+function XPT2046.Temperature
+  (This     : in out XPT2046_Device'Class;
+   V_Ref_mV : Natural) return Integer
+is
+   Result : Natural := 0;
+   Temp   : constant Sensor_Value := This.Read_Sensor_3
+     (Channel_Temp, Reference => Single_Ended, Last => True);
+begin
+   Result := 25 - (Natural (Temp) * V_Ref_mV * 10 / 4096 - 6000) / 21;
 
-   type Interface_Kind is
-     (Parallel,
-      Serial,
-      RGB);
-   --  Defines how the chip is connected to the MCU.
-
-end ILI9341;
+   return Result;
+end XPT2046.Temperature;

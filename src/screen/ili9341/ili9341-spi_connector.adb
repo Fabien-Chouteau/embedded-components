@@ -29,15 +29,38 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Root package for the ILI9341 - 320x240 RGB TFT LCD driver.
+package body ILI9341.SPI_Connector is
 
-package ILI9341 is
-   pragma Pure;
+   ------------------
+   -- Send_Command --
+   ------------------
 
-   type Interface_Kind is
-     (Parallel,
-      Serial,
-      RGB);
-   --  Defines how the chip is connected to the MCU.
+   procedure Send_Command
+     (This : ILI9341_Connector;
+      Cmd  : HAL.UInt8;
+      Data : HAL.UInt8_Array)
+   is
+      use HAL.SPI;
+      Status : SPI_Status;
+   begin
+      This.WRX.Clear;
+      This.Chip_Select.Clear;
+      This.Port.Transmit (SPI_Data_8b'(1 => Cmd), Status);
 
-end ILI9341;
+      if Status /= Ok then
+         raise Program_Error;
+      end if;
+
+      if Data'Length > 0 then
+         This.WRX.Set;
+         This.Port.Transmit (SPI_Data_8b (Data), Status);
+
+         if Status /= Ok then
+            raise Program_Error;
+         end if;
+      end if;
+
+      This.Chip_Select.Set;
+   end Send_Command;
+
+end ILI9341.SPI_Connector;

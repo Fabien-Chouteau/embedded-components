@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                     Copyright (C) 2015-2016, AdaCore                     --
+--                    Copyright (C) 2023, AdaCore                           --
 --                                                                          --
 --  Redistribution and use in source and binary forms, with or without      --
 --  modification, are permitted provided that the following conditions are  --
@@ -11,7 +11,7 @@
 --        notice, this list of conditions and the following disclaimer in   --
 --        the documentation and/or other materials provided with the        --
 --        distribution.                                                     --
---     3. Neither the name of the copyright holder nor the names of its     --
+--     3. Neither the name of STMicroelectronics nor the names of its       --
 --        contributors may be used to endorse or promote products derived   --
 --        from this software without specific prior written permission.     --
 --                                                                          --
@@ -29,37 +29,35 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-package ILI9341_Regs is
+with System;
 
-   ILI9341_RESET         : constant := 16#01#;
-   ILI9341_SLEEP_OUT     : constant := 16#11#;
-   ILI9341_GAMMA         : constant := 16#26#;
-   ILI9341_DISPLAY_OFF   : constant := 16#28#;
-   ILI9341_DISPLAY_ON    : constant := 16#29#;
-   ILI9341_COLUMN_ADDR   : constant := 16#2A#;
-   ILI9341_PAGE_ADDR     : constant := 16#2B#;
-   ILI9341_GRAM          : constant := 16#2C#;
-   ILI9341_MAC           : constant := 16#36#;
-   ILI9341_PIXEL_FORMAT  : constant := 16#3A#;
-   ILI9341_WDB           : constant := 16#51#;
-   ILI9341_WCD           : constant := 16#53#;
-   ILI9341_RGB_INTERFACE : constant := 16#B0#;
-   ILI9341_FRC           : constant := 16#B1#;
-   ILI9341_BPC           : constant := 16#B5#;
-   ILI9341_DFC           : constant := 16#B6#;
-   ILI9341_POWER1        : constant := 16#C0#;
-   ILI9341_POWER2        : constant := 16#C1#;
-   ILI9341_VCOM1         : constant := 16#C5#;
-   ILI9341_VCOM2         : constant := 16#C7#;
-   ILI9341_POWERA        : constant := 16#CB#;
-   ILI9341_POWERB        : constant := 16#CF#;
-   ILI9341_PGAMMA        : constant := 16#E0#;
-   ILI9341_NGAMMA        : constant := 16#E1#;
-   ILI9341_DTCA          : constant := 16#E8#;
-   ILI9341_DTCB          : constant := 16#EA#;
-   ILI9341_POWER_SEQ     : constant := 16#ED#;
-   ILI9341_3GAMMA_EN     : constant := 16#F2#;
-   ILI9341_INTERFACE     : constant := 16#F6#;
-   ILI9341_PRC           : constant := 16#F7#;
+with HAL;
+with HAL.Bitmap;
 
-end ILI9341_Regs;
+package ILI9341.B16_Connector is
+
+   type ILI9341_Connector is record
+      Command : System.Address;
+      RAM     : System.Address;
+   end record;
+   --  ILI9341 in parallel 16-bit mode mapped to the memory
+
+   procedure Send_Command
+     (This : ILI9341_Connector;
+      Cmd  : HAL.UInt8;
+      Data : HAL.UInt8_Array);
+
+   procedure Write_Pixels
+     (This    : ILI9341_Connector;
+      Mode    : HAL.Bitmap.Bitmap_Color_Mode;
+      Address : System.Address;
+      Count   : Positive;
+      Repeat  : Positive);
+
+   procedure Read_Pixels
+     (This    : ILI9341_Connector;
+      Cmd     : HAL.UInt8;
+      Address : System.Address;
+      Count   : Positive);
+
+end ILI9341.B16_Connector;

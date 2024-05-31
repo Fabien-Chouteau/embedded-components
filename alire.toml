@@ -22,7 +22,7 @@ project-files = ["embedded_components.gpr"]
 tags = ["embedded", "nostd"]
 
 [[depends-on]]
-hal = "~0.3.0"
+hal = "~0.3.1"
 adl_middleware = "~0.2.0"
 
 [build-switches]
