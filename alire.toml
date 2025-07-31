@@ -12,7 +12,7 @@ Library](https://github.com/AdaCore/Ada_Drivers_Library/) repo.
 '''
 
 name = "embedded_components"
-version = "0.4.0-dev"
+version = "0.4.0"
 licenses = "BSD-3-Clause"
 authors=["AdaCore"]
 website="https://github.com/AdaCore/Ada_Drivers_Library/"
