@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                     Copyright (C) 2015-2023, AdaCore                     --
+--                     Copyright (C) 2015-2024, AdaCore                     --
 --                                                                          --
 --  Redistribution and use in source and binary forms, with or without      --
 --  modification, are permitted provided that the following conditions are  --
@@ -29,8 +29,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with HAL.SPI;
+with System;
+
+with HAL.Bitmap;
 with HAL.GPIO;
+with HAL.SPI;
 
 package ILI9341.SPI_Connector is
 
@@ -46,5 +49,18 @@ package ILI9341.SPI_Connector is
       Cmd  : HAL.UInt8;
       Data : HAL.UInt8_Array);
    --  Send ILI9341 command over SPI
+
+   procedure Write_Pixels
+     (This    : ILI9341_Connector;
+      Mode    : HAL.Bitmap.Bitmap_Color_Mode;
+      Address : System.Address;
+      Count   : Positive;
+      Repeat  : Positive);
+
+   procedure Read_Pixels
+     (This    : ILI9341_Connector;
+      Cmd     : HAL.UInt8;
+      Address : System.Address;
+      Count   : Positive);
 
 end ILI9341.SPI_Connector;
